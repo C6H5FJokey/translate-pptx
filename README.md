@@ -18,6 +18,16 @@ Advanced usage: you can also add a target filename and an LLM name. At the momen
 translate-pptx my_slides.pptx chinese deepseek-chat my_translated_slides.pptx
 ```
 
+个人做的修改：
+
+将现在第三个参数是使用的模型，第四个参数是自定义命名。
+
+ai翻译后的文本将额外导出json。
+
+允许不使用ai而是直接读取json加载为列表替换。具体用法为`translate-pptx my_slides.pptx chinese json`注意json文件的名称要和**翻译后**ppt的文件名相同，因为这是ai翻译导出json的命名。
+
+这样哪怕翻译出现错误也可以对导出的json进行修改后快速完成微调。
+
 Under the hood it uses ~~[OpenAI's GPT-4o](https://openai.com/blog/openai-api)~~ [Deepseek's v3](https://api-docs.deepseek.com/zh-cn/) to translate the text in the slides and [python-pptx](https://github.com/scanny/python-pptx) to handle the file-format.
 
 ## Disclaimer
