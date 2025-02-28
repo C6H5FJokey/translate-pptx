@@ -1,4 +1,4 @@
-def prompt_openai(message: str, model="gpt-4o-2024-11-20"):
+def prompt_openai(message: str, model="deepseek-chat"):
     """A prompt helper function that sends a message to openAI
     and returns only the text response.
     """
@@ -6,7 +6,7 @@ def prompt_openai(message: str, model="gpt-4o-2024-11-20"):
 
     message = [{"role": "user", "content": message}]
 
-    client = openai.OpenAI()
+    client = openai.OpenAI(base_url="https://api.deepseek.com")
     response = client.chat.completions.create(
         model=model,
         messages=message

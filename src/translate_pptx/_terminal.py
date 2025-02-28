@@ -28,11 +28,11 @@ def command_line_interface(argv=None):
     if len(argv) > 4:
         llm_name = argv[4]
     else:
-        llm_name = "gpt-4o-2024-11-20"
+        llm_name = "deepseek-chat"
 
     if llm_name == "nop":
         prompt_function = prompt_nop
-    elif "gpt-4o" in llm_name:
+    elif "deepseek" in llm_name:
         prompt_function = prompt_openai
     else:
         raise ValueError(f"Unknown model: {llm_name}")
