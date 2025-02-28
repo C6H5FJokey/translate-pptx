@@ -59,7 +59,7 @@ def command_line_interface(argv=None):
     if llm_name != "json":
         json_output = output_pptx.replace('.pptx', '.json')
         with open(json_output, 'w', encoding='utf-8') as f:
-            json.dump(raw_new_texts, f, ensure_ascii=False, indent=2)
+            json.dump(translated_texts, f, ensure_ascii=False, indent=2)
             print(f"Translation data saved to {json_output}")
 
     print(f"Translated presentation saved to {output_pptx}")
