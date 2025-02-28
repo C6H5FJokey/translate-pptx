@@ -15,7 +15,7 @@ translate-pptx my_slides.pptx chinese
 Advanced usage: you can also add a target filename and an LLM name. At the moment, only ~~OpenAI's~~ Deepseek's LLMs are supported. 
 
 ```
-translate-pptx my_slides.pptx chinese my_translated_slides.pptx deepseek-chat
+translate-pptx my_slides.pptx chinese deepseek-chat my_translated_slides.pptx
 ```
 
 Under the hood it uses ~~[OpenAI's GPT-4o](https://openai.com/blog/openai-api)~~ [Deepseek's v3](https://api-docs.deepseek.com/zh-cn/) to translate the text in the slides and [python-pptx](https://github.com/scanny/python-pptx) to handle the file-format.

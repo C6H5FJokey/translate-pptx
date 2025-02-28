@@ -14,22 +14,25 @@ def command_line_interface(argv=None):
 
     input_pptx = argv[1]
     target_language = argv[2]
+
     if len(argv) > 3:
-        output_pptx = argv[3]
+        llm_name = argv[3]
+
+    if not len(argv) > 3 or llm_name in ["default", "_"]:
+        llm_name = "deepseek-chat"
+
+    if len(argv) > 4:
+        output_pptx = argv[4]
     else:
         counter = 0
         suffix = ""
         while True:
             output_pptx = input_pptx.replace(".pptx", f"_{target_language}{suffix}.pptx")
-            if os.path.exists(output_pptx):
+            if os.path.exists(output_pptx) and llm_name != "json":
                 counter += 1
                 suffix = f"_{counter}"
             else:
                 break
-    if len(argv) > 4:
-        llm_name = argv[3]
-    else:
-        llm_name = "deepseek-chat"
 
     if llm_name == "nop":
         prompt_function = Prompt(model=None)
@@ -44,9 +47,9 @@ def command_line_interface(argv=None):
     texts = extract_text_from_slides(input_pptx)
 
     # Translate text
-    translated_texts = translate_data_structure_of_texts_recursive(texts, prompt_function, target_language)
+    translated_texts, raw_new_texts = translate_data_structure_of_texts_recursive(texts, prompt_function, target_language)
     if llm_name == "json":
-        with open(output_pptx.replace('.pptx', '.json'), 'w', encoding='utf-8') as f:
+        with open(output_pptx.replace('.pptx', '.json'), 'r', encoding='utf-8') as f:
             translated_texts = json.load(f)
 
     # Replace text
@@ -56,7 +59,7 @@ def command_line_interface(argv=None):
     if llm_name != "json":
         json_output = output_pptx.replace('.pptx', '.json')
         with open(json_output, 'w', encoding='utf-8') as f:
-            json.dump(translated_texts, f, ensure_ascii=False, indent=2)
+            json.dump(raw_new_texts, f, ensure_ascii=False, indent=2)
             print(f"Translation data saved to {json_output}")
 
     print(f"Translated presentation saved to {output_pptx}")

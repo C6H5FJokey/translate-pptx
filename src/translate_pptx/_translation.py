@@ -10,8 +10,9 @@ def translate_data_structure_of_texts_recursive(original_texts, prompt_function,
     from ._utilities import remove_outer_markdown
 
     new_texts = []
+    raw_new_texts = []
     if prompt_function.model == "json":
-        return 
+        return None, None
     for s, original_text in enumerate(original_texts):
         original_text_json = json.dumps(original_text)
         print("ORIGINAL:\n", original_text_json)
@@ -23,20 +24,24 @@ def translate_data_structure_of_texts_recursive(original_texts, prompt_function,
 
         try:
             translated_texts_json = json.loads(translated_texts)
+            raw_new_texts.append(translated_texts_json)
         except:
             new_texts.append(original_text)
+            raw_new_texts.append(original_text)
             continue
+        
 
         if len(original_text) != len(translated_texts_json):
-            print("Lengths do not match")
+            print(f"Lengths do not match, original: {len(original_text)}, translated: {len(translated_texts_json)}")
             translated_texts_json = original_text
 
         elif any(len(orig) != len(trans) for orig, trans in zip(original_text, translated_texts_json)):
-            print("Lengths of inner lists do not match")
+            print(f"Lengths of inner lists do not match")
             for i in range(len(original_text)):
                 if len(original_text[i]) != len(translated_texts_json[i]):
+                    print(f"Replacing list {i}, original: {len(original_text[i])}, translated: {len(translated_texts_json[i])}")
                     translated_texts_json[i] = original_text[i]
 
         new_texts.append(translated_texts_json)
 
-    return new_texts
+    return new_texts, raw_new_texts
