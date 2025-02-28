@@ -10,10 +10,13 @@ def translate_data_structure_of_texts_recursive(original_texts, prompt_function,
     from ._utilities import remove_outer_markdown
 
     new_texts = []
+    if prompt_function.model == "json":
+        return 
     for s, original_text in enumerate(original_texts):
         original_text_json = json.dumps(original_text)
         print("ORIGINAL:\n", original_text_json)
-        prompt = f"Translate the following text elements to {target_language}. Keep all institute names, project names, library names, and technical terms unchanged. Preserve all line breaks and empty lines exactly as they appear. Preserve the JSON array structure exactly. Return only the translated JSON: {original_text_json}"
+
+        prompt = f"将以下文本元素翻译为{target_language}。保留所有机构名称、项目名称、库名称和技术术语不变。完全保留所有换行符和空行。完全保留JSON数组结构，不要增加或减少列表元素。仅返回翻译后的JSON：{original_text_json}"
 
         translated_texts = remove_outer_markdown(prompt_function(prompt))
         print("TRANSLATED:\n", translated_texts)

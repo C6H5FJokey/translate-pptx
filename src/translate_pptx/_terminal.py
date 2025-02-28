@@ -2,10 +2,11 @@ def command_line_interface(argv=None):
     """Command-line interface for the translate_pptx package."""
     import sys
     import os
+    import json
 
     from ._pptx import extract_text_from_slides, replace_text_in_slides
     from ._translation import translate_data_structure_of_texts_recursive
-    from ._endpoints import prompt_openai, prompt_nop
+    from ._endpoints import Prompt
 
     # Read config from terminal arguments
     if argv is None:
@@ -26,14 +27,16 @@ def command_line_interface(argv=None):
             else:
                 break
     if len(argv) > 4:
-        llm_name = argv[4]
+        llm_name = argv[3]
     else:
         llm_name = "deepseek-chat"
 
     if llm_name == "nop":
-        prompt_function = prompt_nop
+        prompt_function = Prompt(model=None)
     elif "deepseek" in llm_name:
-        prompt_function = prompt_openai
+        prompt_function = Prompt(model=llm_name)
+    elif llm_name == "json":
+        prompt_function = Prompt(model="json", pptx=output_pptx)
     else:
         raise ValueError(f"Unknown model: {llm_name}")
 
@@ -42,8 +45,18 @@ def command_line_interface(argv=None):
 
     # Translate text
     translated_texts = translate_data_structure_of_texts_recursive(texts, prompt_function, target_language)
+    if llm_name == "json":
+        with open(output_pptx.replace('.pptx', '.json'), 'w', encoding='utf-8') as f:
+            translated_texts = json.load(f)
 
     # Replace text
     replace_text_in_slides(input_pptx, translated_texts, output_pptx)
+
+    # Save json
+    if llm_name != "json":
+        json_output = output_pptx.replace('.pptx', '.json')
+        with open(json_output, 'w', encoding='utf-8') as f:
+            json.dump(translated_texts, f, ensure_ascii=False, indent=2)
+            print(f"Translation data saved to {json_output}")
 
     print(f"Translated presentation saved to {output_pptx}")
